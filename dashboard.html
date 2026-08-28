@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Tinsukia Teer Admin Dashboard</title>
+<title>Tinsukia Teer - Admin Dashboard</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -27,22 +27,19 @@ header{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  box-shadow:0 3px 12px rgba(0,0,0,.12);
 }
 
 header h1{
   margin:0;
-  font-size:22px;
+  font-size:21px;
 }
 
 .logout{
-  width:auto;
-  margin:0;
-  padding:10px 16px;
   background:white;
   color:#0d6efd;
-  border-radius:8px;
   border:0;
+  padding:10px 15px;
+  border-radius:8px;
   font-weight:bold;
 }
 
@@ -55,8 +52,8 @@ header h1{
 
 .card{
   background:white;
-  border-radius:18px;
-  padding:22px;
+  border-radius:16px;
+  padding:20px;
   margin-bottom:20px;
   box-shadow:0 5px 20px rgba(0,0,0,.08);
 }
@@ -76,117 +73,79 @@ label{
 input{
   width:100%;
   padding:13px;
-  border:1px solid #ccd7e5;
-  border-radius:10px;
+  border:1px solid #d5dfeb;
+  border-radius:9px;
   font-size:16px;
 }
 
-.row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:15px;
-}
-
-button{
-  border:0;
-  border-radius:10px;
-  padding:13px 18px;
+.save-btn{
+  width:100%;
+  margin-top:20px;
+  padding:14px;
   background:#0d6efd;
   color:white;
-  font-size:16px;
+  border:0;
+  border-radius:9px;
+  font-size:17px;
   font-weight:bold;
-  margin-top:18px;
 }
 
-button.secondary{
-  background:#6c757d;
-}
-
-button.danger{
-  background:#dc3545;
-}
-
-#message{
+.message{
+  text-align:center;
   margin-top:15px;
-  padding:12px;
-  border-radius:10px;
-  display:none;
+  font-weight:bold;
 }
 
 .success{
-  background:#dff6e5;
-  color:#146c2e;
+  color:#16803c;
 }
 
 .error{
-  background:#ffe1e1;
-  color:#a11b1b;
+  color:#d93025;
 }
 
-.result-item{
-  border:1px solid #dbe4ef;
-  border-radius:14px;
-  padding:16px;
-  margin-top:12px;
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
 }
 
-.result-date{
-  font-weight:bold;
+th,td{
+  padding:12px 8px;
+  border-bottom:1px solid #e3e8ef;
+  text-align:center;
+}
+
+th{
+  background:#edf4ff;
   color:#0757b8;
-  font-size:18px;
 }
 
-.numbers{
-  display:flex;
-  gap:20px;
-  margin-top:12px;
+.action-btn{
+  border:0;
+  padding:7px 10px;
+  border-radius:6px;
+  margin:2px;
+  font-weight:bold;
 }
 
-.number-box{
-  flex:1;
+.edit{
+  background:#ffc107;
+  color:#111;
+}
+
+.delete{
+  background:#dc3545;
+  color:white;
+}
+
+.empty{
   text-align:center;
-  background:#f1f6fc;
-  border-radius:12px;
-  padding:12px;
-}
-
-.number-box small{
-  display:block;
-  color:#667085;
-}
-
-.number-box strong{
-  display:block;
-  color:#0d6efd;
-  font-size:32px;
-  margin-top:5px;
-}
-
-.actions{
-  display:flex;
-  gap:10px;
-}
-
-.actions button{
-  flex:1;
-}
-
-.loading{
-  text-align:center;
-  color:#667085;
+  color:#777;
   padding:20px;
 }
 
 @media(max-width:600px){
-
-  .row{
-    grid-template-columns:1fr;
-  }
-
-  .numbers{
-    flex-direction:column;
-    gap:10px;
-  }
 
   header h1{
     font-size:18px;
@@ -195,6 +154,18 @@ button.danger{
   .container{
     padding:12px;
   }
+
+  .card{
+    padding:16px;
+  }
+
+  table{
+    font-size:13px;
+  }
+
+  th,td{
+    padding:9px 5px;
+  }
 }
 </style>
 </head>
@@ -202,89 +173,80 @@ button.danger{
 <body>
 
 <header>
-  <h1>TT Admin Dashboard</h1>
-  <button class="logout" onclick="logout()">Logout</button>
+
+  <h1>🎯 Tinsukia Teer Admin</h1>
+
+  <button class="logout" onclick="logout()">
+    Logout
+  </button>
+
 </header>
+
 
 <div class="container">
 
-  <!-- ADD / UPDATE RESULT -->
+  <!-- ADD RESULT -->
+
   <div class="card">
 
-    <h2 id="formTitle">Add Daily Result</h2>
+    <h2>📅 Add / Update Result</h2>
 
-    <label>Date</label>
-    <input type="date" id="resultDate">
+    <label for="resultDate">
+      Date
+    </label>
 
-    <div class="row">
+    <input
+      type="date"
+      id="resultDate"
+    >
 
-      <div>
-        <label>First Round</label>
-        <input
-          type="number"
-          id="firstRound"
-          min="0"
-          max="99"
-          placeholder="Example: 26"
-        >
-      </div>
+    <label for="firstRound">
+      First Round
+    </label>
 
-      <div>
-        <label>Second Round</label>
-        <input
-          type="number"
-          id="secondRound"
-          min="0"
-          max="99"
-          placeholder="Example: 19"
-        >
-      </div>
+    <input
+      type="number"
+      id="firstRound"
+      min="0"
+      max="99"
+      placeholder="Example: 26"
+    >
 
-    </div>
+    <label for="secondRound">
+      Second Round
+    </label>
 
-    <button onclick="saveResult()" id="saveButton">
-      Save Result
-    </button>
+    <input
+      type="number"
+      id="secondRound"
+      min="0"
+      max="99"
+      placeholder="Example: 19"
+    >
 
     <button
-      onclick="cancelEdit()"
-      class="secondary"
-      id="cancelButton"
-      style="display:none;"
+      class="save-btn"
+      onclick="saveResult()"
     >
-      Cancel Edit
+      💾 Save Result
     </button>
 
-    <div id="message"></div>
+    <div
+      id="message"
+      class="message"
+    ></div>
 
   </div>
 
 
-  <!-- PREVIOUS RESULTS -->
+  <!-- RESULT LIST -->
 
   <div class="card">
 
-    <h2>Previous Results</h2>
+    <h2>📋 Previous Results</h2>
 
-    <label>Search by Date</label>
-
-    <input
-      type="date"
-      id="searchDate"
-      onchange="loadResults()"
-    >
-
-    <button
-      onclick="clearSearch()"
-      class="secondary"
-    >
-      Show All
-    </button>
-
-    <div id="resultsList">
-      <div class="loading">
-        Loading results...
-      </div>
+    <div id="resultsBox">
+      Loading...
     </div>
 
   </div>
@@ -294,15 +256,16 @@ button.danger{
 
 <script>
 
-/* ================================
-   SUPABASE CONFIG
-================================ */
+/* =====================================
+   SUPABASE CONNECTION
+===================================== */
 
 const SUPABASE_URL =
 "https://ihznspejlkvbplofdpyf.supabase.co";
 
 const SUPABASE_KEY =
 "sb_publishable_KNj6WGd8dbjEAXwrWe1_pA_zKAhHMpw";
+
 
 const supabaseClient =
 window.supabase.createClient(
@@ -311,36 +274,9 @@ window.supabase.createClient(
 );
 
 
-/* ================================
-   VARIABLES
-================================ */
-
-let editingId = null;
-
-
-/* ================================
-   PAGE START
-================================ */
-
-document.addEventListener("DOMContentLoaded", async function(){
-
-  const today = new Date();
-
-  const yyyy = today.getFullYear();
-  const mm = String(today.getMonth()+1).padStart(2,"0");
-  const dd = String(today.getDate()).padStart(2,"0");
-
-  document.getElementById("resultDate").value =
-    `${yyyy}-${mm}-${dd}`;
-
-  await checkLogin();
-
-});
-
-
-/* ================================
+/* =====================================
    CHECK LOGIN
-================================ */
+===================================== */
 
 async function checkLogin(){
 
@@ -349,9 +285,20 @@ async function checkLogin(){
     error
   } = await supabaseClient.auth.getSession();
 
-  if(error || !data.session){
+  if(error){
 
-    window.location.href = "admin.html";
+    console.log(error);
+
+    window.location.href =
+      "admin.html";
+
+    return;
+  }
+
+  if(!data.session){
+
+    window.location.href =
+      "admin.html";
 
     return;
   }
@@ -360,9 +307,22 @@ async function checkLogin(){
 }
 
 
-/* ================================
-   SAVE RESULT
-================================ */
+/* =====================================
+   LOGOUT
+===================================== */
+
+async function logout(){
+
+  await supabaseClient.auth.signOut();
+
+  window.location.href =
+    "admin.html";
+}
+
+
+/* =====================================
+   SAVE / UPDATE RESULT
+===================================== */
 
 async function saveResult(){
 
@@ -370,33 +330,49 @@ async function saveResult(){
     document.getElementById("resultDate").value;
 
   const first =
-    document.getElementById("firstRound").value.trim();
+    document.getElementById("firstRound").value;
 
   const second =
-    document.getElementById("secondRound").value.trim();
+    document.getElementById("secondRound").value;
+
+  const message =
+    document.getElementById("message");
+
+
+  message.textContent = "";
+  message.className = "message";
+
+
+  /* VALIDATION */
 
   if(!date){
 
-    showMessage(
-      "Date select karo.",
-      "error"
-    );
+    message.textContent =
+      "Please select a date.";
+
+    message.classList.add("error");
 
     return;
   }
+
 
   if(first === "" || second === ""){
 
-    showMessage(
-      "First Round aur Second Round dono bharo.",
-      "error"
-    );
+    message.textContent =
+      "First Round aur Second Round dono bharo.";
+
+    message.classList.add("error");
 
     return;
   }
 
-  const firstNumber = Number(first);
-  const secondNumber = Number(second);
+
+  const firstNumber =
+    parseInt(first);
+
+  const secondNumber =
+    parseInt(second);
+
 
   if(
     firstNumber < 0 ||
@@ -405,44 +381,55 @@ async function saveResult(){
     secondNumber > 99
   ){
 
-    showMessage(
-      "Result number 0 se 99 ke beech hona chahiye.",
-      "error"
-    );
+    message.textContent =
+      "Result 0 se 99 ke beech hona chahiye.";
+
+    message.classList.add("error");
 
     return;
   }
 
 
+  /* CHECK WHETHER DATE ALREADY EXISTS */
+
+  const {
+    data: existing,
+    error: checkError
+  } = await supabaseClient
+    .from("teer_results")
+    .select("id")
+    .eq("result_date", date)
+    .maybeSingle();
+
+
+  if(checkError){
+
+    message.textContent =
+      "Error: " + checkError.message;
+
+    message.classList.add("error");
+
+    return;
+  }
+
+
+  let error;
+
+
   /* UPDATE */
 
-  if(editingId){
+  if(existing){
 
-    const {
-      error
-    } = await supabaseClient
-      .from("teer_results")
-      .update({
-        result_date:date,
-        first_round:firstNumber,
-        second_round:secondNumber
-      })
-      .eq("id",editingId);
+    const result =
+      await supabaseClient
+        .from("teer_results")
+        .update({
+          first_round: firstNumber,
+          second_round: secondNumber
+        })
+        .eq("id", existing.id);
 
-    if(error){
-
-      showMessage(
-        "Update failed: " + error.message,
-        "error"
-      );
-
-      return;
-    }
-
-    showMessage(
-      "Result successfully updated.",
-      "success"
-    );
+    error = result.error;
 
   }
 
@@ -450,117 +437,77 @@ async function saveResult(){
 
   else{
 
-    const {
-      data:existing,
-      error:checkError
-    } = await supabaseClient
-      .from("teer_results")
-      .select("id")
-      .eq("result_date",date)
-      .maybeSingle();
+    const result =
+      await supabaseClient
+        .from("teer_results")
+        .insert({
+          result_date: date,
+          first_round: firstNumber,
+          second_round: secondNumber
+        });
 
-
-    if(checkError){
-
-      showMessage(
-        "Checking result failed: " +
-        checkError.message,
-        "error"
-      );
-
-      return;
-    }
-
-
-    if(existing){
-
-      showMessage(
-        "Is date ka result already hai. Edit option use karo.",
-        "error"
-      );
-
-      return;
-    }
-
-
-    const {
-      error
-    } = await supabaseClient
-      .from("teer_results")
-      .insert({
-        result_date:date,
-        first_round:firstNumber,
-        second_round:secondNumber
-      });
-
-
-    if(error){
-
-      showMessage(
-        "Save failed: " + error.message,
-        "error"
-      );
-
-      return;
-    }
-
-    showMessage(
-      "Result successfully saved.",
-      "success"
-    );
+    error = result.error;
 
   }
 
 
-  cancelEdit();
+  if(error){
+
+    message.textContent =
+      "Save failed: " + error.message;
+
+    message.classList.add("error");
+
+    return;
+  }
+
+
+  message.textContent =
+    existing
+      ? "✅ Result updated successfully!"
+      : "✅ Result saved successfully!";
+
+  message.classList.add("success");
+
+
+  /* CLEAR */
+
+  document.getElementById("firstRound").value = "";
+  document.getElementById("secondRound").value = "";
+
 
   loadResults();
-
 }
 
 
-/* ================================
+/* =====================================
    LOAD RESULTS
-================================ */
+===================================== */
 
 async function loadResults(){
 
-  const list =
-    document.getElementById("resultsList");
+  const box =
+    document.getElementById("resultsBox");
 
-  list.innerHTML =
-    '<div class="loading">Loading results...</div>';
-
-
-  const searchDate =
-    document.getElementById("searchDate").value;
-
-
-  let query =
-    supabaseClient
-      .from("teer_results")
-      .select("*")
-      .order("result_date",{ascending:false});
-
-
-  if(searchDate){
-
-    query =
-      query.eq("result_date",searchDate);
-
-  }
+  box.innerHTML = "Loading...";
 
 
   const {
     data,
     error
-  } = await query;
+  } = await supabaseClient
+    .from("teer_results")
+    .select("*")
+    .order("result_date", {
+      ascending:false
+    });
 
 
   if(error){
 
-    list.innerHTML =
-      `<div class="error" style="display:block">
+    box.innerHTML =
+      `<div class="error">
+        Error loading results:<br>
         ${escapeHtml(error.message)}
       </div>`;
 
@@ -570,176 +517,140 @@ async function loadResults(){
 
   if(!data || data.length === 0){
 
-    list.innerHTML =
-      '<div class="loading">No results found.</div>';
+    box.innerHTML =
+      `<div class="empty">
+        No results added yet.
+      </div>`;
 
     return;
   }
 
 
-  list.innerHTML = "";
+  let html = `
+
+    <div style="overflow-x:auto">
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>Date</th>
+
+          <th>First Round</th>
+
+          <th>Second Round</th>
+
+          <th>Action</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+  `;
 
 
-  data.forEach(result => {
+  data.forEach(row => {
 
-    const div =
-      document.createElement("div");
+    html += `
 
-    div.className = "result-item";
+      <tr>
 
+        <td>
+          ${formatDate(row.result_date)}
+        </td>
 
-    const date =
-      formatDate(result.result_date);
-
-
-    div.innerHTML = `
-
-      <div class="result-date">
-        ${date}
-      </div>
-
-      <div class="numbers">
-
-        <div class="number-box">
-          <small>FIRST ROUND</small>
+        <td>
           <strong>
-            ${escapeHtml(String(result.first_round))}
+            ${row.first_round ?? "-"}
           </strong>
-        </div>
+        </td>
 
-        <div class="number-box">
-          <small>SECOND ROUND</small>
+        <td>
           <strong>
-            ${escapeHtml(String(result.second_round))}
+            ${row.second_round ?? "-"}
           </strong>
-        </div>
+        </td>
 
-      </div>
+        <td>
 
-      <div class="actions">
+          <button
+            class="action-btn edit"
+            onclick="editResult(
+              '${row.result_date}',
+              '${row.first_round ?? ""}',
+              '${row.second_round ?? ""}'
+            )"
+          >
+            Edit
+          </button>
 
-        <button
-          onclick="editResult('${result.id}')"
-        >
-          Edit
-        </button>
+          <button
+            class="action-btn delete"
+            onclick="deleteResult(${row.id})"
+          >
+            Delete
+          </button>
 
-        <button
-          class="danger"
-          onclick="deleteResult('${result.id}')"
-        >
-          Delete
-        </button>
+        </td>
 
-      </div>
+      </tr>
 
     `;
 
-
-    list.appendChild(div);
-
   });
 
+
+  html += `
+
+      </tbody>
+
+    </table>
+
+    </div>
+
+  `;
+
+
+  box.innerHTML = html;
 }
 
 
-/* ================================
+/* =====================================
    EDIT RESULT
-================================ */
+===================================== */
 
-async function editResult(id){
+function editResult(
+  date,
+  first,
+  second
+){
 
-  const {
-    data,
-    error
-  } = await supabaseClient
-    .from("teer_results")
-    .select("*")
-    .eq("id",id)
-    .single();
+  document.getElementById(
+    "resultDate"
+  ).value = date;
 
+  document.getElementById(
+    "firstRound"
+  ).value = first;
 
-  if(error){
-
-    showMessage(
-      "Could not load result: " +
-      error.message,
-      "error"
-    );
-
-    return;
-  }
-
-
-  editingId = id;
-
-
-  document.getElementById("resultDate").value =
-    data.result_date;
-
-  document.getElementById("firstRound").value =
-    data.first_round;
-
-  document.getElementById("secondRound").value =
-    data.second_round;
-
-
-  document.getElementById("formTitle").textContent =
-    "Edit Daily Result";
-
-  document.getElementById("saveButton").textContent =
-    "Update Result";
-
-  document.getElementById("cancelButton").style.display =
-    "block";
+  document.getElementById(
+    "secondRound"
+  ).value = second;
 
 
   window.scrollTo({
     top:0,
     behavior:"smooth"
   });
-
 }
 
 
-/* ================================
-   CANCEL EDIT
-================================ */
-
-function cancelEdit(){
-
-  editingId = null;
-
-
-  document.getElementById("formTitle").textContent =
-    "Add Daily Result";
-
-  document.getElementById("saveButton").textContent =
-    "Save Result";
-
-  document.getElementById("cancelButton").style.display =
-    "none";
-
-
-  document.getElementById("firstRound").value = "";
-
-  document.getElementById("secondRound").value = "";
-
-
-  const today = new Date();
-
-  const yyyy = today.getFullYear();
-  const mm = String(today.getMonth()+1).padStart(2,"0");
-  const dd = String(today.getDate()).padStart(2,"0");
-
-  document.getElementById("resultDate").value =
-    `${yyyy}-${mm}-${dd}`;
-}
-
-
-/* ================================
+/* =====================================
    DELETE RESULT
-================================ */
+===================================== */
 
 async function deleteResult(id){
 
@@ -750,7 +661,6 @@ async function deleteResult(id){
 
 
   if(!confirmDelete){
-
     return;
   }
 
@@ -760,120 +670,99 @@ async function deleteResult(id){
   } = await supabaseClient
     .from("teer_results")
     .delete()
-    .eq("id",id);
+    .eq("id", id);
 
 
   if(error){
 
-    showMessage(
+    alert(
       "Delete failed: " +
-      error.message,
-      "error"
+      error.message
     );
 
     return;
   }
 
 
-  showMessage(
-    "Result deleted.",
-    "success"
+  alert(
+    "✅ Result deleted successfully!"
   );
 
 
   loadResults();
-
 }
 
 
-/* ================================
-   LOGOUT
-================================ */
-
-async function logout(){
-
-  await supabaseClient.auth.signOut();
-
-  window.location.href = "admin.html";
-
-}
-
-
-/* ================================
-   SEARCH CLEAR
-================================ */
-
-function clearSearch(){
-
-  document.getElementById("searchDate").value = "";
-
-  loadResults();
-
-}
-
-
-/* ================================
-   MESSAGE
-================================ */
-
-function showMessage(text,type){
-
-  const box =
-    document.getElementById("message");
-
-  box.textContent = text;
-
-  box.className = "";
-
-  box.classList.add(type);
-
-  box.style.display = "block";
-
-
-  setTimeout(function(){
-
-    box.style.display = "none";
-
-  },4000);
-
-}
-
-
-/* ================================
+/* =====================================
    DATE FORMAT
-================================ */
+===================================== */
 
 function formatDate(dateString){
 
-  const date =
-    new Date(dateString + "T00:00:00");
+  if(!dateString){
+    return "-";
+  }
 
-  return date.toLocaleDateString(
-    "en-IN",
-    {
-      day:"2-digit",
-      month:"short",
-      year:"numeric"
-    }
+  const parts =
+    dateString.split("-");
+
+  if(parts.length !== 3){
+    return dateString;
+  }
+
+  return (
+    parts[2] +
+    " " +
+    monthName(parts[1]) +
+    " " +
+    parts[0]
   );
-
 }
 
 
-/* ================================
+function monthName(month){
+
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ];
+
+  return months[
+    parseInt(month) - 1
+  ];
+}
+
+
+/* =====================================
    HTML SECURITY
-================================ */
+===================================== */
 
 function escapeHtml(text){
 
-  const div =
-    document.createElement("div");
-
-  div.textContent = text;
-
-  return div.innerHTML;
-
+  return String(text)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 }
+
+
+/* =====================================
+   START
+===================================== */
+
+checkLogin();
 
 </script>
 
