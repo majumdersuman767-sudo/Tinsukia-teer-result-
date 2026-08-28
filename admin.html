@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tinsukia Teer Admin Login</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f1f6fc;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.box{
+  width:100%;
+  max-width:400px;
+  background:white;
+  padding:30px 22px;
+  border-radius:20px;
+  box-shadow:0 10px 35px rgba(0,0,0,.10);
+}
+.logo{
+  width:65px;
+  height:65px;
+  border-radius:50%;
+  background:#0d6efd;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:25px;
+  font-weight:bold;
+  margin:0 auto 15px;
+}
+h1{text-align:center;color:#0757b8;font-size:25px}
+p{text-align:center;color:#718096}
+input{
+  width:100%;
+  padding:14px;
+  margin:8px 0;
+  border:1px solid #d5dfeb;
+  border-radius:10px;
+  font-size:16px;
+}
+button{
+  width:100%;
+  padding:14px;
+  margin-top:12px;
+  border:0;
+  border-radius:10px;
+  background:#0d6efd;
+  color:white;
+  font-size:16px;
+  font-weight:bold;
+}
+#error{
+  color:#d93025;
+  text-align:center;
+  margin-top:12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+  <div class="logo">TT</div>
+
+  <h1>Admin Login</h1>
+  <p>Tinsukia Teer Result</p>
+
+  <input
+    type="email"
+    id="email"
+    placeholder="Admin Email"
+  >
+
+  <input
+    type="password"
+    id="password"
+    placeholder="Password"
+  >
+
+  <button onclick="login()">Login</button>
+
+  <div id="error"></div>
+
+</div>
+
+<script>
+
+const SUPABASE_URL = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imloem5zcGVqbGt2YnBsb2ZkcHlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4NDMzODEsImV4cCI6MjEwMzQxOTM4MX0.mzbA28U6J0-8e3C7fA53VtePI3bbwqnHCTXOEDrJGEY
+
+const SUPABASE_KEY = "sb_publishable_KNj6WGd8dbjEAXwrWe1_pA_zKAhHMpw
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+async function login(){
+
+  const email =
+    document.getElementById("email").value.trim();
+
+  const password =
+    document.getElementById("password").value;
+
+  const errorBox =
+    document.getElementById("error");
+
+  errorBox.textContent = "";
+
+  if(!email || !password){
+    errorBox.textContent =
+      "Email aur password dono bharo.";
+    return;
+  }
+
+  const { data, error } =
+    await supabaseClient.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
+
+  if(error){
+    errorBox.textContent =
+      "Login failed: " + error.message;
+    return;
+  }
+
+  window.location.href = "dashboard.html";
+}
+
+</script>
+
+</body>
+</html>
