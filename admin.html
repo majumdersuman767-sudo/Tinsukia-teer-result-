@@ -3,12 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Tinsukia Teer Admin Login</title>
 
+<!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
+
 body{
   margin:0;
   font-family:Arial,sans-serif;
@@ -19,52 +24,100 @@ body{
   justify-content:center;
   padding:20px;
 }
+
 .box{
   width:100%;
   max-width:400px;
-  background:white;
-  padding:30px 22px;
-  border-radius:20px;
-  box-shadow:0 10px 35px rgba(0,0,0,.10);
+  background:#ffffff;
+  padding:32px 22px;
+  border-radius:22px;
+  box-shadow:0 10px 35px rgba(0,0,0,0.10);
 }
+
 .logo{
-  width:65px;
-  height:65px;
+  width:70px;
+  height:70px;
   border-radius:50%;
   background:#0d6efd;
   color:white;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:25px;
+  font-size:27px;
   font-weight:bold;
-  margin:0 auto 15px;
+  margin:0 auto 16px;
 }
-h1{text-align:center;color:#0757b8;font-size:25px}
-p{text-align:center;color:#718096}
+
+h1{
+  text-align:center;
+  color:#0757b8;
+  font-size:26px;
+  margin:10px 0;
+}
+
+.subtitle{
+  text-align:center;
+  color:#718096;
+  margin-bottom:25px;
+}
+
 input{
   width:100%;
-  padding:14px;
+  padding:15px;
   margin:8px 0;
   border:1px solid #d5dfeb;
-  border-radius:10px;
+  border-radius:11px;
   font-size:16px;
+  outline:none;
 }
+
+input:focus{
+  border-color:#0d6efd;
+  box-shadow:0 0 0 3px rgba(13,110,253,0.10);
+}
+
 button{
   width:100%;
-  padding:14px;
-  margin-top:12px;
+  padding:15px;
+  margin-top:14px;
   border:0;
-  border-radius:10px;
+  border-radius:11px;
   background:#0d6efd;
   color:white;
-  font-size:16px;
+  font-size:17px;
   font-weight:bold;
+  cursor:pointer;
 }
+
+button:active{
+  transform:scale(0.99);
+}
+
+button:disabled{
+  background:#8ab8f8;
+  cursor:not-allowed;
+}
+
 #error{
   color:#d93025;
   text-align:center;
-  margin-top:12px;
+  margin-top:14px;
+  font-size:14px;
+  min-height:20px;
+}
+
+#success{
+  color:#188038;
+  text-align:center;
+  margin-top:14px;
+  font-size:14px;
+}
+
+.footer{
+  text-align:center;
+  color:#8a96a3;
+  font-size:12px;
+  margin-top:25px;
 }
 </style>
 </head>
@@ -76,36 +129,66 @@ button{
   <div class="logo">TT</div>
 
   <h1>Admin Login</h1>
-  <p>Tinsukia Teer Result</p>
+
+  <div class="subtitle">
+    Tinsukia Teer Result
+  </div>
 
   <input
     type="email"
     id="email"
     placeholder="Admin Email"
+    autocomplete="email"
   >
 
   <input
     type="password"
     id="password"
     placeholder="Password"
+    autocomplete="current-password"
   >
 
-  <button onclick="login()">Login</button>
+  <button id="loginButton" onclick="login()">
+    Login
+  </button>
 
   <div id="error"></div>
+
+  <div id="success"></div>
+
+  <div class="footer">
+    Admin Panel • Tinsukia Teer Result
+  </div>
 
 </div>
 
 <script>
 
-const SUPABASE_URL = "const SUPABASE_URL = "https://ihznspejlkvbplofdpyf.supabase.co"
-const SUPABASE_KEY = "sb_publishable_KNj6WGd8dbjEAXwrWe1_pA_zKAhHMpw"
+/* ================================
+   SUPABASE CONFIGURATION
+================================ */
+
+const SUPABASE_URL =
+"https://ihznspejlkvbplofdpyf.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_KNj6WGd8dbjEAXwrWe1_pA_zKAhHMpw";
+
+
+/* ================================
+   CREATE SUPABASE CLIENT
+================================ */
 
 const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+
+/* ================================
+   ADMIN LOGIN
+================================ */
 
 async function login(){
 
@@ -118,28 +201,109 @@ async function login(){
   const errorBox =
     document.getElementById("error");
 
+  const successBox =
+    document.getElementById("success");
+
+  const loginButton =
+    document.getElementById("loginButton");
+
+
+  /* Clear old messages */
+
   errorBox.textContent = "";
+  successBox.textContent = "";
+
+
+  /* Check fields */
 
   if(!email || !password){
+
     errorBox.textContent =
       "Email aur password dono bharo.";
+
     return;
   }
 
-  const { data, error } =
-    await supabaseClient.auth.signInWithPassword({
-      email: email,
-      password: password
-    });
 
-  if(error){
+  /* Loading */
+
+  loginButton.disabled = true;
+  loginButton.textContent = "Logging in...";
+
+
+  try{
+
+    const { data, error } =
+      await supabaseClient.auth.signInWithPassword({
+
+        email: email,
+
+        password: password
+
+      });
+
+
+    /* Login error */
+
+    if(error){
+
+      errorBox.textContent =
+        "Login failed: " + error.message;
+
+      loginButton.disabled = false;
+      loginButton.textContent = "Login";
+
+      return;
+    }
+
+
+    /* Login successful */
+
+    if(data && data.session){
+
+      successBox.textContent =
+        "Login successful. Opening dashboard...";
+
+
+      setTimeout(function(){
+
+        window.location.href =
+          "dashboard.html";
+
+      },800);
+
+    }
+
+  }catch(err){
+
     errorBox.textContent =
-      "Login failed: " + error.message;
-    return;
+      "Something went wrong. Please try again.";
+
+    loginButton.disabled = false;
+    loginButton.textContent = "Login";
+
+    console.error(err);
+
   }
 
-  window.location.href = "dashboard.html";
 }
+
+
+/* ================================
+   ENTER KEY LOGIN
+================================ */
+
+document
+.getElementById("password")
+.addEventListener("keydown",function(event){
+
+  if(event.key === "Enter"){
+
+    login();
+
+  }
+
+});
 
 </script>
 
