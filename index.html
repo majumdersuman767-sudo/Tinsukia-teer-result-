@@ -408,7 +408,74 @@
 </footer>
 
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
+
+  const SUPABASE_URL = "https://ihznspejlkvbplofdpyf.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_KNj6WGd8dbjEAXwrWe1_pA_zKAhHMpw";
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  function formatDate(value) {
+    if (!value) return "-";
+    const d = new Date(value + "T00:00:00");
+    return d.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+  }
+
+  async function loadPublicResults() {
+    const first = document.getElementById("firstResult");
+    const second = document.getElementById("secondResult");
+    const today = document.getElementById("today");
+    const previous = document.getElementById("previous");
+
+    first.textContent = "...";
+    second.textContent = "...";
+
+    const { data, error } = await supabaseClient
+      .from("teer_results")
+      .select("result_date, first_round, second_round")
+      .order("result_date", { ascending: false });
+
+    if (error) {
+      console.error("Error loading results:", error);
+      first.textContent = "--";
+      second.textContent = "--";
+      today.textContent = "Unable to load result";
+      previous.innerHTML = '<h2 class="section-title">Previous Results</h2><div class="previous-card">Unable to load results. Please refresh the page.</div>';
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      first.textContent = "--";
+      second.textContent = "--";
+      today.textContent = "No result available";
+      previous.innerHTML = '<h2 class="section-title">Previous Results</h2><div class="previous-card">No results added yet.</div>';
+      return;
+    }
+
+    const latest = data[0];
+    first.textContent = latest.first_round ?? "--";
+    second.textContent = latest.second_round ?? "--";
+    today.textContent = formatDate(latest.result_date);
+
+    let html = '<h2 class="section-title">Previous Results</h2>';
+    const older = data.slice(1);
+
+    if (older.length === 0) {
+      html += '<div class="previous-card">No previous results yet.</div>';
+    } else {
+      older.forEach(row => {
+        html += `
+          <div class="previous-card">
+            <div class="previous-date">${formatDate(row.result_date)}</div>
+            <div class="previous-row"><span>First Round</span><span>${row.first_round ?? "-"}</span></div>
+            <div class="previous-row"><span>Second Round</span><span>${row.second_round ?? "-"}</span></div>
+          </div>`;
+      });
+    }
+
+    previous.innerHTML = html;
+  }
 
   // Today's date
   const date = new Date();
@@ -421,6 +488,8 @@
 
   document.getElementById("today").textContent =
     date.toLocaleDateString("en-IN", options);
+
+  loadPublicResults();
 
 
   // Page switching
