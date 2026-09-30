@@ -1,519 +1,1242 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
-   <meta name="google-site-verification" content="google9b329a81b4af78b5.html">
+<meta charset="UTF-8">
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
 
-    <title>Tinsukia Teer Result - Daily Result</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tinsukia Teer Result</title>
 
-  <title>Tinsukia Teer Result - Daily Result</title>
-  <meta name="description" content="Tinsukia Teer daily result and previous results.">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
 
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f8fc;
-      color: #172033;
-    }
+<style>
 
-    header {
-      background: #ffffff;
-      border-bottom: 1px solid #dbe5ef;
-      padding: 15px 18px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
 
-    .header-inner {
-      max-width: 900px;
-      margin: auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
+body{
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
 
-    .logo {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: #0d6efd;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 21px;
-      font-weight: bold;
-    }
+  background:#f4f6fb;
 
-    .brand h1 {
-      font-size: 20px;
-      color: #0757b8;
-    }
+  color:#172033;
 
-    .brand p {
-      font-size: 12px;
-      color: #718096;
-      margin-top: 3px;
-    }
+}
 
-    nav {
-      display: flex;
-      gap: 8px;
-    }
 
-    nav button {
-      border: none;
-      padding: 10px 13px;
-      border-radius: 22px;
-      background: #eef5ff;
-      color: #0757b8;
-      font-weight: bold;
-      cursor: pointer;
-    }
+/* ================================
+   HEADER
+================================ */
 
-    nav button.active {
-      background: #0d6efd;
-      color: white;
-    }
+header{
 
-    main {
-      max-width: 900px;
-      margin: auto;
-      padding: 22px 15px 40px;
-    }
+  background:
+    linear-gradient(
+      135deg,
+      #101b4d,
+      #243b9b
+    );
 
-    .hero {
-      background: linear-gradient(135deg, #0d6efd, #064a9e);
-      color: white;
-      padding: 28px 22px;
-      border-radius: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 8px 25px rgba(13, 110, 253, 0.18);
-    }
+  color:white;
 
-    .hero h2 {
-      font-size: 27px;
-      margin-bottom: 8px;
-    }
+  padding:22px 16px;
 
-    .hero p {
-      opacity: 0.9;
-      line-height: 1.5;
-    }
+  box-shadow:
+    0 4px 16px #0002;
 
-    .date {
-      margin-top: 15px;
-      display: inline-block;
-      background: rgba(255,255,255,0.15);
-      padding: 8px 12px;
-      border-radius: 20px;
-      font-size: 14px;
-    }
+}
 
-    .section-title {
-      font-size: 22px;
-      margin: 22px 0 12px;
-      color: #172033;
-    }
 
-    .result-card {
-      background: white;
-      border: 1px solid #dbe5ef;
-      border-radius: 18px;
-      padding: 20px;
-      margin-bottom: 14px;
-      box-shadow: 0 4px 15px rgba(30, 70, 110, 0.06);
-    }
+.container{
 
-    .round-title {
-      text-align: center;
-      color: #0757b8;
-      font-weight: bold;
-      font-size: 17px;
-    }
+  max-width:1000px;
 
-    .time {
-      text-align: center;
-      color: #718096;
-      font-size: 13px;
-      margin-top: 4px;
-    }
+  margin:auto;
 
-    .number {
-      text-align: center;
-      font-size: 58px;
-      font-weight: 700;
-      color: #0d6efd;
-      margin-top: 10px;
-    }
+  padding:0 14px;
 
-    .previous {
-      display: none;
-    }
+}
 
-    .previous-card {
-      background: white;
-      border: 1px solid #dbe5ef;
-      border-radius: 15px;
-      padding: 15px;
-      margin-bottom: 12px;
-    }
 
-    .previous-date {
-      font-weight: bold;
-      color: #172033;
-      margin-bottom: 10px;
-    }
+.brand{
 
-    .previous-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      border-top: 1px solid #edf2f7;
-    }
+  display:flex;
 
-    .previous-row span:last-child {
-      font-weight: bold;
-      color: #0d6efd;
-    }
+  align-items:center;
 
-    .notice {
-      background: #eaf3ff;
-      border-left: 4px solid #0d6efd;
-      padding: 14px;
-      border-radius: 10px;
-      margin-top: 20px;
-      color: #31506f;
-      font-size: 13px;
-      line-height: 1.5;
-    }
+  justify-content:space-between;
 
-    footer {
-      background: #ffffff;
-      border-top: 1px solid #dbe5ef;
-      text-align: center;
-      padding: 22px 15px;
-      color: #718096;
-      font-size: 13px;
-    }
+  gap:10px;
 
-    @media (max-width: 600px) {
-      .header-inner {
-        align-items: flex-start;
-      }
+}
 
-      .brand h1 {
-        font-size: 17px;
-      }
 
-      nav {
-        flex-wrap: wrap;
-        justify-content: flex-end;
-      }
+.logo{
 
-      nav button {
-        font-size: 12px;
-        padding: 8px 10px;
-      }
+  font-size:27px;
 
-      .hero h2 {
-        font-size: 23px;
-      }
+  font-weight:800;
 
-      .number {
-        font-size: 52px;
-      }
-    }
-  </style>
+}
+
+
+.tag{
+
+  font-size:12px;
+
+  opacity:.8;
+
+  margin-top:4px;
+
+}
+
+
+nav{
+
+  display:flex;
+
+  gap:8px;
+
+  margin-top:18px;
+
+  overflow:auto;
+
+}
+
+
+nav a{
+
+  color:white;
+
+  text-decoration:none;
+
+  background:#ffffff18;
+
+  padding:9px 14px;
+
+  border-radius:20px;
+
+  white-space:nowrap;
+
+  font-size:14px;
+
+}
+
+
+/* ================================
+   HERO
+================================ */
+
+.hero{
+
+  padding:28px 0 18px;
+
+  text-align:center;
+
+}
+
+
+.hero h1{
+
+  font-size:32px;
+
+  margin-bottom:8px;
+
+}
+
+
+.hero p{
+
+  color:#667085;
+
+}
+
+
+/* ================================
+   TODAY RESULT
+================================ */
+
+.grid{
+
+  display:grid;
+
+  grid-template-columns:
+    repeat(2,1fr);
+
+  gap:14px;
+
+  margin:18px 0;
+
+}
+
+
+.card{
+
+  background:white;
+
+  border-radius:18px;
+
+  padding:20px;
+
+  box-shadow:
+    0 5px 20px #17203310;
+
+  border:
+    1px solid #e9edf5;
+
+}
+
+
+.result{
+
+  text-align:center;
+
+}
+
+
+.result h3{
+
+  font-size:14px;
+
+  color:#667085;
+
+  margin-bottom:10px;
+
+}
+
+
+.number{
+
+  font-size:54px;
+
+  font-weight:900;
+
+  letter-spacing:2px;
+
+  color:#17358f;
+
+}
+
+
+.fr{
+
+  border-top:
+    5px solid #e53935;
+
+}
+
+
+.sr{
+
+  border-top:
+    5px solid #1565c0;
+
+}
+
+
+.xx{
+
+  color:#777;
+
+  letter-spacing:4px;
+
+}
+
+
+.result small{
+
+  color:#667085;
+
+}
+
+
+/* ================================
+   SECTION
+================================ */
+
+.section-title{
+
+  font-size:21px;
+
+  margin:26px 0 12px;
+
+}
+
+
+/* ================================
+   NOTICE
+================================ */
+
+.notice{
+
+  background:#fff8e1;
+
+  border-left:
+    5px solid #ffb300;
+
+  padding:16px;
+
+  border-radius:12px;
+
+  color:#6b5200;
+
+  line-height:1.5;
+
+}
+
+
+/* ================================
+   SEARCH
+================================ */
+
+.search{
+
+  display:flex;
+
+  gap:10px;
+
+}
+
+
+.search input{
+
+  flex:1;
+
+  padding:13px;
+
+  border:
+    1px solid #d8deea;
+
+  border-radius:12px;
+
+  font-size:15px;
+
+  outline:none;
+
+}
+
+
+.btn{
+
+  border:0;
+
+  background:#17358f;
+
+  color:white;
+
+  padding:13px 18px;
+
+  border-radius:12px;
+
+  font-weight:700;
+
+  cursor:pointer;
+
+}
+
+
+/* ================================
+   TABLE
+================================ */
+
+.table-wrap{
+
+  overflow:auto;
+
+}
+
+
+.history{
+
+  width:100%;
+
+  border-collapse:collapse;
+
+  background:white;
+
+  border-radius:14px;
+
+  overflow:hidden;
+
+}
+
+
+.history th,
+.history td{
+
+  padding:13px;
+
+  text-align:center;
+
+  border-bottom:
+    1px solid #edf0f5;
+
+}
+
+
+.history th{
+
+  background:#eef2ff;
+
+  color:#263777;
+
+  font-size:13px;
+
+}
+
+
+.history td{
+
+  font-weight:600;
+
+}
+
+
+.result-box{
+
+  display:inline-block;
+
+  min-width:45px;
+
+  padding:6px 10px;
+
+  background:#eef4ff;
+
+  border-radius:8px;
+
+}
+
+
+.result-box.xx{
+
+  background:#f1f1f1;
+
+  color:#777;
+
+}
+
+
+/* ================================
+   LOADING
+================================ */
+
+.loading{
+
+  text-align:center;
+
+  padding:25px;
+
+  color:#667085;
+
+}
+
+
+.error{
+
+  text-align:center;
+
+  padding:20px;
+
+  color:#d93025;
+
+}
+
+
+/* ================================
+   FOOTER
+================================ */
+
+footer{
+
+  margin-top:35px;
+
+  background:#101b4d;
+
+  color:white;
+
+  text-align:center;
+
+  padding:25px 15px;
+
+  font-size:13px;
+
+}
+
+
+/* ================================
+   MOBILE
+================================ */
+
+@media(max-width:600px){
+
+  .grid{
+
+    grid-template-columns:1fr;
+
+  }
+
+
+  .hero h1{
+
+    font-size:27px;
+
+  }
+
+
+  .number{
+
+    font-size:48px;
+
+  }
+
+
+  .search{
+
+    flex-direction:column;
+
+  }
+
+
+  .btn{
+
+    width:100%;
+
+  }
+
+
+  .history{
+
+    font-size:13px;
+
+  }
+
+
+  .history th,
+  .history td{
+
+    padding:10px 6px;
+
+  }
+
+}
+
+</style>
+
 </head>
+
 
 <body>
 
+
 <header>
-  <div class="header-inner">
+
+  <div class="container">
 
     <div class="brand">
-      <div class="logo">TT</div>
 
       <div>
-        <h1>Tinsukia Teer Result</h1>
-        <p>Daily Result</p>
+
+        <div class="logo">
+          🏹 TINSUKIA TEER
+        </div>
+
+        <div class="tag">
+          Fast • Accurate • Daily
+        </div>
+
       </div>
+
+      <div>
+        🇮🇳
+      </div>
+
     </div>
 
-    <nav>
-      <button class="active" onclick="showPage('daily', this)">
-        Daily Result
-      </button>
 
-      <button onclick="showPage('previous', this)">
-        Previous Result
-      </button>
+    <nav>
+
+      <a href="#home">
+        Home
+      </a>
+
+      <a href="#result">
+        Today Result
+      </a>
+
+      <a href="#history">
+        History
+      </a>
+
+      <a href="#notice">
+        Notice
+      </a>
+
     </nav>
 
   </div>
+
 </header>
 
 
-<main>
 
-  <!-- DAILY RESULT -->
+<main
+  class="container"
+  id="home"
+>
 
-  <section id="daily">
 
-    <div class="hero">
-      <h2>Tinsukia Teer Result</h2>
-      <p>Check today's first round and second round result.</p>
+  <!-- HERO -->
 
-      <div class="date">
-        Date: <span id="today"></span>
+  <section class="hero">
+
+    <h1>
+      Tinsukia Teer Result
+    </h1>
+
+    <p>
+      Check today's 1st & 2nd Round result
+      and previous results.
+    </p>
+
+  </section>
+
+
+
+  <!-- TODAY RESULT -->
+
+  <section
+    id="result"
+    class="grid"
+  >
+
+
+    <div class="card result fr">
+
+      <h3>
+        FIRST ROUND (8 PM)
+      </h3>
+
+      <div
+        class="number"
+        id="fr"
+      >
+        XX
       </div>
+
+      <small>
+        Today's result
+      </small>
+
     </div>
 
 
-    <h2 class="section-title">Today's Result</h2>
 
+    <div class="card result sr">
 
-    <div class="result-card">
+      <h3>
+        SECOND ROUND (9 PM)
+      </h3>
 
-      <div class="round-title">
-        FIRST ROUND
+      <div
+        class="number xx"
+        id="sr"
+      >
+        XX
       </div>
 
-      <div class="time">
-        8:00 PM
-      </div>
-
-      <!-- CHANGE FIRST ROUND NUMBER HERE -->
-      <div class="number" id="firstResult">
-        26
-      </div>
+      <small>
+        Today's result
+      </small>
 
     </div>
 
 
-    <div class="result-card">
+  </section>
 
-      <div class="round-title">
-        SECOND ROUND
-      </div>
 
-      <div class="time">
-        9:00 PM
-      </div>
 
-      <!-- CHANGE SECOND ROUND NUMBER HERE -->
-      <div class="number" id="secondResult">
-        19
-      </div>
+  <!-- NOTICE -->
 
-    </div>
+  <section id="notice">
 
+    <h2 class="section-title">
+      📢 Notice
+    </h2>
 
     <div class="notice">
-      Results are displayed for informational purposes.
-      Please verify results through the appropriate official source.
+
+      2nd Round result is shown as
+      <strong>XX</strong>
+      until the result is updated.
+
     </div>
 
   </section>
 
 
 
-  <!-- PREVIOUS RESULTS -->
+  <!-- HISTORY -->
 
-  <section id="previous" class="previous">
+  <section id="history">
 
     <h2 class="section-title">
-      Previous Results
+      📊 Result History
     </h2>
 
 
-    <div class="previous-card">
+    <div class="search">
 
-      <div class="previous-date">
-        26 August 2026
-      </div>
+      <input
+        id="search"
+        placeholder="Search date..."
+      >
 
-      <div class="previous-row">
-        <span>First Round</span>
-        <span>26</span>
-      </div>
-
-      <div class="previous-row">
-        <span>Second Round</span>
-        <span>19</span>
-      </div>
+      <button
+        class="btn"
+        onclick="filterRows()"
+      >
+        Search
+      </button>
 
     </div>
 
 
-    <div class="previous-card">
+    <div
+      class="card table-wrap"
+      style="margin-top:12px;padding:0"
+    >
 
-      <div class="previous-date">
-        25 August 2026
-      </div>
+      <table class="history">
 
-      <div class="previous-row">
-        <span>First Round</span>
-        <span>32</span>
-      </div>
+        <thead>
 
-      <div class="previous-row">
-        <span>Second Round</span>
-        <span>17</span>
-      </div>
+          <tr>
 
-    </div>
+            <th>
+              Date
+            </th>
+
+            <th>
+              1st Round
+            </th>
+
+            <th>
+              2nd Round
+            </th>
+
+          </tr>
+
+        </thead>
 
 
-    <div class="previous-card">
+        <tbody id="rows">
 
-      <div class="previous-date">
-        24 August 2026
-      </div>
+          <tr>
 
-      <div class="previous-row">
-        <span>First Round</span>
-        <span>21</span>
-      </div>
+            <td colspan="3">
+              <div class="loading">
+                Loading results...
+              </div>
+            </td>
 
-      <div class="previous-row">
-        <span>Second Round</span>
-        <span>48</span>
-      </div>
+          </tr>
+
+        </tbody>
+
+      </table>
 
     </div>
 
   </section>
+
 
 </main>
 
 
+
 <footer>
+
   © 2026 Tinsukia Teer Result
-  <br><br>
-  Daily result information
+  • Results information only
+
 </footer>
 
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
-  const SUPABASE_URL = "https://ihznspejlkvbplofdpyf.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_KNj6WGd8dbjEAXwrWe1_pA_zKAhHMpw";
-  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+/* =====================================
+   SUPABASE
+===================================== */
 
-  function formatDate(value) {
-    if (!value) return "-";
-    const d = new Date(value + "T00:00:00");
-    return d.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+const SUPABASE_URL =
+"https://ihznspejlkvbplofdpyf.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_KNj6WGd8dbjEAXwrWe1_pA_zKAhHMpw";
+
+
+const supabaseClient =
+window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+
+/* =====================================
+   GET TODAY DATE
+===================================== */
+
+function getTodayDate(){
+
+  const now =
+    new Date();
+
+
+  const year =
+    now.getFullYear();
+
+
+  const month =
+    String(
+      now.getMonth() + 1
+    ).padStart(2,"0");
+
+
+  const day =
+    String(
+      now.getDate()
+    ).padStart(2,"0");
+
+
+  return (
+    year +
+    "-" +
+    month +
+    "-" +
+    day
+  );
+
+}
+
+
+/* =====================================
+   LOAD TODAY RESULT
+===================================== */
+
+async function loadTodayResult(){
+
+  const today =
+    getTodayDate();
+
+
+  const {
+    data,
+    error
+  } = await supabaseClient
+    .from("teer_results")
+    .select(
+      "first_round, second_round"
+    )
+    .eq("result_date",today)
+    .maybeSingle();
+
+
+  if(error){
+
+    console.error(error);
+
+    document.getElementById("fr")
+      .textContent = "XX";
+
+    document.getElementById("sr")
+      .textContent = "XX";
+
+    return;
+
   }
 
-  async function loadPublicResults() {
-    const first = document.getElementById("firstResult");
-    const second = document.getElementById("secondResult");
-    const today = document.getElementById("today");
-    const previous = document.getElementById("previous");
 
-    first.textContent = "...";
-    second.textContent = "...";
+  if(!data){
 
-    const { data, error } = await supabaseClient
-      .from("teer_results")
-      .select("result_date, first_round, second_round")
-      .order("result_date", { ascending: false });
+    document.getElementById("fr")
+      .textContent = "XX";
 
-    if (error) {
-      console.error("Error loading results:", error);
-      first.textContent = "--";
-      second.textContent = "--";
-      today.textContent = "Unable to load result";
-      previous.innerHTML = '<h2 class="section-title">Previous Results</h2><div class="previous-card">Unable to load results. Please refresh the page.</div>';
-      return;
-    }
+    document.getElementById("sr")
+      .textContent = "XX";
 
-    if (!data || data.length === 0) {
-      first.textContent = "--";
-      second.textContent = "--";
-      today.textContent = "No result available";
-      previous.innerHTML = '<h2 class="section-title">Previous Results</h2><div class="previous-card">No results added yet.</div>';
-      return;
-    }
+    return;
 
-    const latest = data[0];
-    first.textContent = latest.first_round ?? "--";
-    second.textContent = latest.second_round ?? "--";
-    today.textContent = formatDate(latest.result_date);
-
-    let html = '<h2 class="section-title">Previous Results</h2>';
-    const older = data.slice(1);
-
-    if (older.length === 0) {
-      html += '<div class="previous-card">No previous results yet.</div>';
-    } else {
-      older.forEach(row => {
-        html += `
-          <div class="previous-card">
-            <div class="previous-date">${formatDate(row.result_date)}</div>
-            <div class="previous-row"><span>First Round</span><span>${row.first_round ?? "-"}</span></div>
-            <div class="previous-row"><span>Second Round</span><span>${row.second_round ?? "-"}</span></div>
-          </div>`;
-      });
-    }
-
-    previous.innerHTML = html;
   }
 
-  // Today's date
-  const date = new Date();
 
-  const options = {
-    day: "2-digit",
-    month: "short",
-    year: "numeric"
-  };
+  /* FIRST ROUND */
 
-  document.getElementById("today").textContent =
-    date.toLocaleDateString("en-IN", options);
+  if(data.first_round !== null){
 
-  loadPublicResults();
+    document.getElementById("fr")
+      .textContent =
+      data.first_round;
 
+    document.getElementById("fr")
+      .classList.remove("xx");
 
-  // Page switching
-  function showPage(page, button) {
-
-    document.getElementById("daily").style.display = "none";
-    document.getElementById("previous").style.display = "none";
-
-    document.getElementById(page).style.display = "block";
-
-    document.querySelectorAll("nav button")
-      .forEach(btn => btn.classList.remove("active"));
-
-    button.classList.add("active");
   }
+
+  else{
+
+    document.getElementById("fr")
+      .textContent = "XX";
+
+    document.getElementById("fr")
+      .classList.add("xx");
+
+  }
+
+
+  /* SECOND ROUND */
+
+  if(data.second_round !== null){
+
+    document.getElementById("sr")
+      .textContent =
+      data.second_round;
+
+    document.getElementById("sr")
+      .classList.remove("xx");
+
+  }
+
+  else{
+
+    document.getElementById("sr")
+      .textContent = "XX";
+
+    document.getElementById("sr")
+      .classList.add("xx");
+
+  }
+
+}
+
+
+/* =====================================
+   LOAD HISTORY
+===================================== */
+
+async function loadHistory(){
+
+  const rows =
+    document.getElementById("rows");
+
+
+  rows.innerHTML = `
+
+    <tr>
+
+      <td colspan="3">
+
+        <div class="loading">
+          Loading results...
+        </div>
+
+      </td>
+
+    </tr>
+
+  `;
+
+
+  const {
+    data,
+    error
+  } = await supabaseClient
+    .from("teer_results")
+    .select(
+      "result_date, first_round, second_round"
+    )
+    .order(
+      "result_date",
+      {
+        ascending:false
+      }
+    );
+
+
+  if(error){
+
+    rows.innerHTML = `
+
+      <tr>
+
+        <td colspan="3">
+
+          <div class="error">
+
+            Unable to load results.
+
+          </div>
+
+        </td>
+
+      </tr>
+
+    `;
+
+    console.error(error);
+
+    return;
+
+  }
+
+
+  if(!data || data.length === 0){
+
+    rows.innerHTML = `
+
+      <tr>
+
+        <td colspan="3">
+
+          <div class="loading">
+
+            No results available.
+
+          </div>
+
+        </td>
+
+      </tr>
+
+    `;
+
+    return;
+
+  }
+
+
+  let html = "";
+
+
+  data.forEach(row => {
+
+    const first =
+      row.first_round !== null
+        ? row.first_round
+        : "XX";
+
+
+    const second =
+      row.second_round !== null
+        ? row.second_round
+        : "XX";
+
+
+    const secondClass =
+      second === "XX"
+        ? "xx"
+        : "";
+
+
+    html += `
+
+      <tr>
+
+        <td>
+          ${formatDate(row.result_date)}
+        </td>
+
+        <td>
+
+          <span class="result-box">
+
+            ${escapeHtml(
+              String(first)
+            )}
+
+          </span>
+
+        </td>
+
+        <td>
+
+          <span
+            class="result-box ${secondClass}"
+          >
+
+            ${escapeHtml(
+              String(second)
+            )}
+
+          </span>
+
+        </td>
+
+      </tr>
+
+    `;
+
+  });
+
+
+  rows.innerHTML = html;
+
+}
+
+
+/* =====================================
+   DATE FORMAT
+===================================== */
+
+function formatDate(dateString){
+
+  if(!dateString){
+
+    return "-";
+
+  }
+
+
+  const parts =
+    dateString.split("-");
+
+
+  if(parts.length !== 3){
+
+    return dateString;
+
+  }
+
+
+  return (
+    parts[2] +
+    " " +
+    monthName(parts[1]) +
+    " " +
+    parts[0]
+  );
+
+}
+
+
+function monthName(month){
+
+  const months = [
+
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+
+  ];
+
+
+  return months[
+    parseInt(month,10) - 1
+  ];
+
+}
+
+
+/* =====================================
+   SEARCH
+===================================== */
+
+function filterRows(){
+
+  const q =
+    document.getElementById(
+      "search"
+    )
+    .value
+    .toLowerCase()
+    .trim();
+
+
+  document
+    .querySelectorAll("#rows tr")
+    .forEach(row => {
+
+      row.style.display =
+        row.innerText
+          .toLowerCase()
+          .includes(q)
+            ? ""
+            : "none";
+
+    });
+
+}
+
+
+/* =====================================
+   HTML SECURITY
+===================================== */
+
+function escapeHtml(text){
+
+  return String(text)
+
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+
+    .replace(
+      /</g,
+      "&lt;"
+    )
+
+    .replace(
+      />/g,
+      "&gt;"
+    )
+
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
+}
+
+
+/* =====================================
+   START
+===================================== */
+
+loadTodayResult();
+
+loadHistory();
 
 </script>
 
+
 </body>
+
 </html>
