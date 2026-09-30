@@ -41,6 +41,7 @@ header h1{
   padding:10px 15px;
   border-radius:8px;
   font-weight:bold;
+  cursor:pointer;
 }
 
 .container{
@@ -76,24 +77,58 @@ input{
   border:1px solid #d5dfeb;
   border-radius:9px;
   font-size:16px;
+  outline:none;
 }
 
-.save-btn{
+input:focus{
+  border-color:#0d6efd;
+}
+
+.round-box{
+  background:#f8fbff;
+  border:1px solid #dce8f7;
+  padding:16px;
+  border-radius:14px;
+  margin-top:15px;
+}
+
+.round-title{
+  font-size:18px;
+  font-weight:bold;
+  color:#0757b8;
+  margin-bottom:10px;
+}
+
+.update-btn{
   width:100%;
-  margin-top:20px;
+  margin-top:12px;
   padding:14px;
-  background:#0d6efd;
-  color:white;
   border:0;
   border-radius:9px;
-  font-size:17px;
+  color:white;
+  font-size:16px;
   font-weight:bold;
+  cursor:pointer;
+}
+
+.first-btn{
+  background:#0d6efd;
+}
+
+.second-btn{
+  background:#198754;
+}
+
+.update-btn:disabled{
+  opacity:.6;
+  cursor:not-allowed;
 }
 
 .message{
   text-align:center;
   margin-top:15px;
   font-weight:bold;
+  min-height:20px;
 }
 
 .success{
@@ -102,6 +137,16 @@ input{
 
 .error{
   color:#d93025;
+}
+
+.current{
+  margin-top:8px;
+  color:#667085;
+  font-size:14px;
+}
+
+.current strong{
+  color:#172033;
 }
 
 table{
@@ -127,11 +172,17 @@ th{
   border-radius:6px;
   margin:2px;
   font-weight:bold;
+  cursor:pointer;
 }
 
-.edit{
+.edit-first{
   background:#ffc107;
   color:#111;
+}
+
+.edit-second{
+  background:#20c997;
+  color:white;
 }
 
 .delete{
@@ -143,6 +194,21 @@ th{
   text-align:center;
   color:#777;
   padding:20px;
+}
+
+.xx{
+  color:#777;
+  letter-spacing:2px;
+}
+
+.info{
+  background:#eef7ff;
+  border-left:4px solid #0d6efd;
+  padding:13px;
+  border-radius:8px;
+  margin-bottom:15px;
+  color:#31506f;
+  font-size:14px;
 }
 
 @media(max-width:600px){
@@ -166,6 +232,11 @@ th{
   th,td{
     padding:9px 5px;
   }
+
+  .action-btn{
+    font-size:11px;
+    padding:6px 7px;
+  }
 }
 </style>
 </head>
@@ -185,11 +256,14 @@ th{
 
 <div class="container">
 
-  <!-- ADD RESULT -->
-
   <div class="card">
 
-    <h2>📅 Add / Update Result</h2>
+    <h2>📅 Update Result</h2>
+
+    <div class="info">
+      1st Round aur 2nd Round ko ab alag-alag update kar sakte ho.
+      Ek round update karne se doosra round change nahi hoga.
+    </div>
 
     <label for="resultDate">
       Date
@@ -200,36 +274,72 @@ th{
       id="resultDate"
     >
 
-    <label for="firstRound">
-      First Round
-    </label>
 
-    <input
-      type="number"
-      id="firstRound"
-      min="0"
-      max="99"
-      placeholder="Example: 26"
-    >
+    <!-- FIRST ROUND -->
 
-    <label for="secondRound">
-      Second Round
-    </label>
+    <div class="round-box">
 
-    <input
-      type="number"
-      id="secondRound"
-      min="0"
-      max="99"
-      placeholder="Example: 19"
-    >
+      <div class="round-title">
+        🥇 1st Round
+      </div>
 
-    <button
-      class="save-btn"
-      onclick="saveResult()"
-    >
-      💾 Save Result
-    </button>
+      <input
+        type="number"
+        id="firstRound"
+        min="0"
+        max="99"
+        inputmode="numeric"
+        placeholder="Example: 26"
+      >
+
+      <div class="current">
+        Current Result:
+        <strong id="currentFirst">XX</strong>
+      </div>
+
+      <button
+        id="firstButton"
+        class="update-btn first-btn"
+        onclick="saveRound('first')"
+      >
+        💾 Update 1st Round
+      </button>
+
+    </div>
+
+
+    <!-- SECOND ROUND -->
+
+    <div class="round-box">
+
+      <div class="round-title">
+        🥈 2nd Round
+      </div>
+
+      <input
+        type="number"
+        id="secondRound"
+        min="0"
+        max="99"
+        inputmode="numeric"
+        placeholder="Example: 19"
+      >
+
+      <div class="current">
+        Current Result:
+        <strong id="currentSecond">XX</strong>
+      </div>
+
+      <button
+        id="secondButton"
+        class="update-btn second-btn"
+        onclick="saveRound('second')"
+      >
+        💾 Update 2nd Round
+      </button>
+
+    </div>
+
 
     <div
       id="message"
@@ -266,7 +376,6 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_KNj6WGd8dbjEAXwrWe1_pA_zKAhHMpw";
 
-
 const supabaseClient =
 window.supabase.createClient(
   SUPABASE_URL,
@@ -285,25 +394,15 @@ async function checkLogin(){
     error
   } = await supabaseClient.auth.getSession();
 
-  if(error){
+  if(error || !data.session){
 
-    console.log(error);
-
-    window.location.href =
-      "admin.html";
-
-    return;
-  }
-
-  if(!data.session){
-
-    window.location.href =
-      "admin.html";
+    window.location.href = "admin.html";
 
     return;
   }
 
   loadResults();
+
 }
 
 
@@ -315,35 +414,133 @@ async function logout(){
 
   await supabaseClient.auth.signOut();
 
-  window.location.href =
-    "admin.html";
+  window.location.href = "admin.html";
+
 }
 
 
 /* =====================================
-   SAVE / UPDATE RESULT
+   SET DEFAULT DATE
 ===================================== */
 
-async function saveResult(){
+function setDefaultDate(){
+
+  const dateInput =
+    document.getElementById("resultDate");
+
+  if(!dateInput.value){
+
+    const now = new Date();
+
+    const year =
+      now.getFullYear();
+
+    const month =
+      String(now.getMonth() + 1)
+        .padStart(2,"0");
+
+    const day =
+      String(now.getDate())
+        .padStart(2,"0");
+
+    dateInput.value =
+      year + "-" + month + "-" + day;
+
+  }
+
+}
+
+
+/* =====================================
+   LOAD RESULT FOR SELECTED DATE
+===================================== */
+
+async function loadDateResult(){
 
   const date =
     document.getElementById("resultDate").value;
 
-  const first =
-    document.getElementById("firstRound").value;
+  if(!date){
 
-  const second =
-    document.getElementById("secondRound").value;
+    return;
+  }
+
+  const {
+    data,
+    error
+  } = await supabaseClient
+    .from("teer_results")
+    .select("first_round, second_round")
+    .eq("result_date", date)
+    .maybeSingle();
+
+
+  if(error){
+
+    console.log(error);
+
+    return;
+  }
+
+
+  if(data){
+
+    document.getElementById("currentFirst")
+      .textContent =
+      data.first_round ?? "XX";
+
+    document.getElementById("currentSecond")
+      .textContent =
+      data.second_round ?? "XX";
+
+    document.getElementById("firstRound")
+      .value =
+      data.first_round ?? "";
+
+    document.getElementById("secondRound")
+      .value =
+      data.second_round ?? "";
+
+  }
+
+  else{
+
+    document.getElementById("currentFirst")
+      .textContent = "XX";
+
+    document.getElementById("currentSecond")
+      .textContent = "XX";
+
+    document.getElementById("firstRound")
+      .value = "";
+
+    document.getElementById("secondRound")
+      .value = "";
+
+  }
+
+}
+
+
+/* =====================================
+   UPDATE ONLY ONE ROUND
+===================================== */
+
+async function saveRound(round){
+
+  const date =
+    document.getElementById("resultDate").value;
 
   const message =
     document.getElementById("message");
 
 
   message.textContent = "";
+
   message.className = "message";
 
 
-  /* VALIDATION */
+  /* DATE CHECK */
 
   if(!date){
 
@@ -353,32 +550,68 @@ async function saveResult(){
     message.classList.add("error");
 
     return;
+
   }
 
 
-  if(first === "" || second === ""){
+  let input;
+  let button;
+  let column;
+
+
+  if(round === "first"){
+
+    input =
+      document.getElementById("firstRound");
+
+    button =
+      document.getElementById("firstButton");
+
+    column =
+      "first_round";
+
+  }
+
+  else{
+
+    input =
+      document.getElementById("secondRound");
+
+    button =
+      document.getElementById("secondButton");
+
+    column =
+      "second_round";
+
+  }
+
+
+  const value =
+    input.value.trim();
+
+
+  /* RESULT CHECK */
+
+  if(value === ""){
 
     message.textContent =
-      "First Round aur Second Round dono bharo.";
+      "Result bharo.";
 
     message.classList.add("error");
 
     return;
+
   }
 
 
-  const firstNumber =
-    parseInt(first);
-
-  const secondNumber =
-    parseInt(second);
+  const number =
+    parseInt(value,10);
 
 
   if(
-    firstNumber < 0 ||
-    firstNumber > 99 ||
-    secondNumber < 0 ||
-    secondNumber > 99
+    isNaN(number) ||
+    number < 0 ||
+    number > 99
   ){
 
     message.textContent =
@@ -387,101 +620,144 @@ async function saveResult(){
     message.classList.add("error");
 
     return;
+
   }
 
 
-  /* CHECK WHETHER DATE ALREADY EXISTS */
+  /* LOADING */
 
-  const {
-    data: existing,
-    error: checkError
-  } = await supabaseClient
-    .from("teer_results")
-    .select("id")
-    .eq("result_date", date)
-    .maybeSingle();
+  button.disabled = true;
+  button.textContent = "Updating...";
 
 
-  if(checkError){
+  try{
+
+    /* FIND DATE */
+
+    const {
+      data: existing,
+      error: checkError
+    } = await supabaseClient
+      .from("teer_results")
+      .select("id")
+      .eq("result_date", date)
+      .maybeSingle();
+
+
+    if(checkError){
+
+      throw checkError;
+
+    }
+
+
+    let result;
+
+
+    /* =================================
+       EXISTING DATE
+       UPDATE ONLY SELECTED ROUND
+    ================================= */
+
+    if(existing){
+
+      const updateData = {};
+
+      updateData[column] = number;
+
+
+      result =
+        await supabaseClient
+          .from("teer_results")
+          .update(updateData)
+          .eq("id", existing.id);
+
+    }
+
+
+    /* =================================
+       NEW DATE
+       INSERT ONLY SELECTED ROUND
+    ================================= */
+
+    else{
+
+      const insertData = {
+
+        result_date: date
+
+      };
+
+      insertData[column] = number;
+
+
+      result =
+        await supabaseClient
+          .from("teer_results")
+          .insert(insertData);
+
+    }
+
+
+    if(result.error){
+
+      throw result.error;
+
+    }
+
+
+    /* SUCCESS */
+
+    if(round === "first"){
+
+      document.getElementById("currentFirst")
+        .textContent = number;
+
+    }
+
+    else{
+
+      document.getElementById("currentSecond")
+        .textContent = number;
+
+    }
+
 
     message.textContent =
-      "Error: " + checkError.message;
+      round === "first"
+        ? "✅ 1st Round updated successfully!"
+        : "✅ 2nd Round updated successfully!";
+
+    message.classList.add("success");
+
+
+    loadResults();
+
+
+  }catch(error){
+
+    console.error(error);
+
+    message.textContent =
+      "Update failed: " + error.message;
 
     message.classList.add("error");
 
-    return;
   }
 
 
-  let error;
+  button.disabled = false;
 
+  button.textContent =
+    round === "first"
+      ? "💾 Update 1st Round"
+      : "💾 Update 2nd Round";
 
-  /* UPDATE */
-
-  if(existing){
-
-    const result =
-      await supabaseClient
-        .from("teer_results")
-        .update({
-          first_round: firstNumber,
-          second_round: secondNumber
-        })
-        .eq("id", existing.id);
-
-    error = result.error;
-
-  }
-
-  /* INSERT */
-
-  else{
-
-    const result =
-      await supabaseClient
-        .from("teer_results")
-        .insert({
-          result_date: date,
-          first_round: firstNumber,
-          second_round: secondNumber
-        });
-
-    error = result.error;
-
-  }
-
-
-  if(error){
-
-    message.textContent =
-      "Save failed: " + error.message;
-
-    message.classList.add("error");
-
-    return;
-  }
-
-
-  message.textContent =
-    existing
-      ? "✅ Result updated successfully!"
-      : "✅ Result saved successfully!";
-
-  message.classList.add("success");
-
-
-  /* CLEAR */
-
-  document.getElementById("firstRound").value = "";
-  document.getElementById("secondRound").value = "";
-
-
-  loadResults();
 }
 
 
 /* =====================================
-   LOAD RESULTS
+   LOAD ALL RESULTS
 ===================================== */
 
 async function loadResults(){
@@ -512,6 +788,7 @@ async function loadResults(){
       </div>`;
 
     return;
+
   }
 
 
@@ -523,6 +800,7 @@ async function loadResults(){
       </div>`;
 
     return;
+
   }
 
 
@@ -538,9 +816,9 @@ async function loadResults(){
 
           <th>Date</th>
 
-          <th>First Round</th>
+          <th>1st Round</th>
 
-          <th>Second Round</th>
+          <th>2nd Round</th>
 
           <th>Action</th>
 
@@ -549,10 +827,18 @@ async function loadResults(){
       </thead>
 
       <tbody>
+
   `;
 
 
   data.forEach(row => {
+
+    const first =
+      row.first_round ?? "XX";
+
+    const second =
+      row.second_round ?? "XX";
+
 
     html += `
 
@@ -564,27 +850,40 @@ async function loadResults(){
 
         <td>
           <strong>
-            ${row.first_round ?? "-"}
+            ${escapeHtml(String(first))}
           </strong>
         </td>
 
         <td>
-          <strong>
-            ${row.second_round ?? "-"}
+          <strong class="${
+            second === "XX" ? "xx" : ""
+          }">
+            ${escapeHtml(String(second))}
           </strong>
         </td>
 
         <td>
 
           <button
-            class="action-btn edit"
-            onclick="editResult(
+            class="action-btn edit-first"
+            onclick="editRound(
               '${row.result_date}',
-              '${row.first_round ?? ""}',
+              'first',
+              '${row.first_round ?? ""}'
+            )"
+          >
+            1st Edit
+          </button>
+
+          <button
+            class="action-btn edit-second"
+            onclick="editRound(
+              '${row.result_date}',
+              'second',
               '${row.second_round ?? ""}'
             )"
           >
-            Edit
+            2nd Edit
           </button>
 
           <button
@@ -615,36 +914,59 @@ async function loadResults(){
 
 
   box.innerHTML = html;
+
 }
 
 
 /* =====================================
-   EDIT RESULT
+   EDIT ONE ROUND
 ===================================== */
 
-function editResult(
+function editRound(
   date,
-  first,
-  second
+  round,
+  value
 ){
 
-  document.getElementById(
-    "resultDate"
-  ).value = date;
+  document.getElementById("resultDate")
+    .value = date;
 
-  document.getElementById(
-    "firstRound"
-  ).value = first;
 
-  document.getElementById(
-    "secondRound"
-  ).value = second;
+  loadDateResult();
+
+
+  setTimeout(function(){
+
+    if(round === "first"){
+
+      document.getElementById("firstRound")
+        .value =
+        value === "" ? "" : value;
+
+      document.getElementById("firstRound")
+        .focus();
+
+    }
+
+    else{
+
+      document.getElementById("secondRound")
+        .value =
+        value === "" ? "" : value;
+
+      document.getElementById("secondRound")
+        .focus();
+
+    }
+
+  },300);
 
 
   window.scrollTo({
     top:0,
     behavior:"smooth"
   });
+
 }
 
 
@@ -656,12 +978,14 @@ async function deleteResult(id){
 
   const confirmDelete =
     confirm(
-      "Kya aap ye result delete karna chahte ho?"
+      "Kya aap ye poora date ka result delete karna chahte ho?"
     );
 
 
   if(!confirmDelete){
+
     return;
+
   }
 
 
@@ -670,7 +994,7 @@ async function deleteResult(id){
   } = await supabaseClient
     .from("teer_results")
     .delete()
-    .eq("id", id);
+    .eq("id",id);
 
 
   if(error){
@@ -681,6 +1005,7 @@ async function deleteResult(id){
     );
 
     return;
+
   }
 
 
@@ -690,6 +1015,7 @@ async function deleteResult(id){
 
 
   loadResults();
+
 }
 
 
@@ -700,15 +1026,22 @@ async function deleteResult(id){
 function formatDate(dateString){
 
   if(!dateString){
+
     return "-";
+
   }
+
 
   const parts =
     dateString.split("-");
 
+
   if(parts.length !== 3){
+
     return dateString;
+
   }
+
 
   return (
     parts[2] +
@@ -717,6 +1050,7 @@ function formatDate(dateString){
     " " +
     parts[0]
   );
+
 }
 
 
@@ -737,9 +1071,11 @@ function monthName(month){
     "Dec"
   ];
 
+
   return months[
-    parseInt(month) - 1
+    parseInt(month,10) - 1
   ];
+
 }
 
 
@@ -755,12 +1091,27 @@ function escapeHtml(text){
     .replace(/>/g,"&gt;")
     .replace(/"/g,"&quot;")
     .replace(/'/g,"&#039;");
+
 }
+
+
+/* =====================================
+   DATE CHANGE
+===================================== */
+
+document
+  .getElementById("resultDate")
+  .addEventListener(
+    "change",
+    loadDateResult
+  );
 
 
 /* =====================================
    START
 ===================================== */
+
+setDefaultDate();
 
 checkLogin();
 
